@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Orientation Formation CREFAC</title>
+
+<style>
+
+:root{
+--primary:#1E3A5F;
+--secondary:#F28C28;
+--bg:#f4f7fb;
+--text:#1d1d1d;
+--white:#ffffff;
+}
+
+body{
+margin:0;
+font-family:Arial, Helvetica, sans-serif;
+background:var(--bg);
+color:var(--text);
+}
+
+header{
+background:var(--primary);
+color:white;
+padding:20px;
+display:flex;
+align-items:center;
+gap:20px;
+}
+
+header img{
+height:70px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+padding:20px;
+}
+
+.card{
+background:white;
+padding:25px;
+border-radius:16px;
+box-shadow:0 4px 12px rgba(0,0,0,0.1);
+margin-top:20px;
+}
+
+h1,h2{
+margin-top:0;
+}
+
+button{
+width:100%;
+padding:15px;
+margin-top:10px;
+border:none;
+border-radius:12px;
+background:var(--primary);
+color:white;
+font-size:16px;
+cursor:pointer;
+transition:0.2s;
+}
+
+button:hover{
+background:#274b78;
+transform:scale(1.01);
+}
+
+.option{
+background:#e8eef7;
+color:#1d1d1d;
+}
+
+.progress{
+height:10px;
+background:#dbe4f0;
+border-radius:30px;
+overflow:hidden;
+margin-bottom:20px;
+}
+
+.progress-bar{
+height:100%;
+background:var(--secondary);
+width:0%;
+transition:0.3s;
+}
+
+.result-tag{
+display:inline-block;
+background:var(--secondary);
+color:white;
+padding:8px 14px;
+border-radius:30px;
+margin:5px;
+font-size:14px;
+}
+
+.formation{
+background:#f7f9fc;
+border-left:5px solid var(--secondary);
+padding:15px;
+margin-top:15px;
+border-radius:10px;
+}
+
+.formation a{
+text-decoration:none;
+font-weight:bold;
+color:var(--primary);
+font-size:18px;
+}
+
+.small{
+font-size:14px;
+color:#666;
+margin-top:8px;
+}
+
+.intro{
+font-size:18px;
+line-height:1.6;
+}
+
+.logo-result{
+text-align:center;
+margin-bottom:20px;
+}
+
+.logo-result img{
+height:80px;
+}
+
+@media(max-width:700px){
+
+header{
+flex-direction:column;
+text-align:center;
+}
+
+header img{
+height:60px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<img src="logo-crefac.png" alt="Logo CREFAC">
+
+<div>
+<h1>Quel parcours CREFAC est fait pour vous ?</h1>
+
+<p>
+Un outil d’orientation pour identifier les formations les plus adaptées
+à votre situation, vos responsabilités et vos besoins actuels.
+</p>
+</div>
+
+</header>
+
+<div class="container">
+
+<div class="card intro">
+
+<h2>Bienvenue</h2>
+
+<p>
+Ce questionnaire vous permet d’identifier les formations CREFAC
+les plus adaptées à vos enjeux professionnels, syndicaux
+et organisationnels.
+</p>
+
+<p>
+En quelques questions, vous obtiendrez :
+</p>
+
+<ul>
+<li>un profil dominant,</li>
+<li>des recommandations ciblées,</li>
+<li>des accès directs aux formations du catalogue CREFAC.</li>
+</ul>
+
+<button onclick="startQuiz()">
+Commencer le questionnaire
+</button>
+
+</div>
+
+<div id="app"></div>
+
+</div>
+
+<script>
+
+const questions = [
+
+{
+question:"Votre rôle principal aujourd’hui ?",
+options:[
+{text:"Militant syndical",scores:{DS:2}},
+{text:"Responsable syndical",scores:{MG:2}},
+{text:"Élu / mandaté",scores:{NEG:2}},
+{text:"Manager / cadre",scores:{DP:2}},
+{text:"Référent QVCT / conditions de travail",scores:{CT:2}}
+]
+},
+
+{
+question:"Votre enjeu principal ?",
+options:[
+{text:"Développer la CFDT",scores:{DS:3}},
+{text:"Animer un collectif",scores:{MG:3}},
+{text:"Mieux dialoguer au travail",scores:{DP:3}},
+{text:"Agir sur les transformations du travail",scores:{IA:3}},
+{text:"Agir sur les conditions de travail",scores:{CT:3}}
+]
+},
+
+{
+question:"Vous souhaitez principalement…",
+options:[
+{text:"Développer vos pratiques de dialogue",scores:{DP:2}},
+{text:"Structurer une équipe ou un collectif",scores:{MG:2}},
+{text:"Préparer des élections / négociations",scores:{NEG:2}},
+{text:"Mieux comprendre l’IA et le numérique",scores:{IA:2}},
+{text:"Développer la syndicalisation",scores:{DS:2}}
+]
+},
+
+{
+question:"Dans votre activité, vous êtes surtout confronté à…",
+options:[
+{text:"Des tensions ou conflits",scores:{CT:2}},
+{text:"Des transformations organisationnelles",scores:{IA:2}},
+{text:"Des enjeux de management",scores:{MG:2}},
+{text:"Des besoins d’écoute des salariés",scores:{DP:2}},
+{text:"Des enjeux de représentation",scores:{NEG:2}}
+]
+},
+
+{
+question:"Quelle dimension vous attire le plus ?",
+options:[
+{text:"Le travail réel et les échanges",scores:{DP:2}},
+{text:"Le pilotage de projets",scores:{MG:2}},
+{text:"La stratégie syndicale",scores:{DS:2}},
+{text:"Le dialogue social",scores:{NEG:2}},
+{text:"La santé et la charge de travail",scores:{CT:2}}
+]
+},
+
+{
+question:"Votre priorité actuelle ?",
+options:[
+{text:"Accompagner des changements",scores:{IA:2}},
+{text:"Faire progresser le collectif",scores:{MG:2}},
+{text:"Créer du lien avec les salariés",scores:{DP:2}},
+{text:"Développer la représentation CFDT",scores:{DS:2}},
+{text:"Améliorer les conditions de travail",scores:{CT:2}}
+]
+}
+
+];
+
+const formations = [
+
+{
+titre:"Entretien syndical",
+url:"https://www.crefac.com/formations/formations-syndicales/entretien-syndical/",
+principal:"DP",
+secondaire:"MG"
+},
+
+{
+titre:"Conduite de projet pour responsables syndicaux",
+url:"https://www.crefac.com/formations/formations-syndicales/conduite-de-projet-pour-les-responsables-syndicaux/",
+principal:"MG",
+secondaire:"DS"
+},
+
+{
+titre:"Cursus de formation secrétaires de syndicats",
+url:"https://www.crefac.com/formations/formations-syndicales/cursus-de-formation-secretaires-de-syndicats/",
+principal:"MG",
+secondaire:"DP"
+},
+
+{
+titre:"Agir syndicalement sur le déploiement de l’IA en entreprise et en administration",
+url:"https://www.crefac.com/formations/formations-syndicales/agir-syndicalement-sur-le-deploiement-de-lia-en-entreprise-et-en-administration/",
+principal:"IA",
+secondaire:"DP"
+},
+
+{
+titre:"Déployer le dialogue professionnel dans son entreprise/administration",
+url:"https://www.crefac.com/formations/formations-syndicales/deployer-le-dialogue-professionnel-dans-son-entreprise-administration/",
+principal:"DP",
+secondaire:"NEG"
+},
+
+{
+titre:"Formation de formateurs Imagin Syndicalisation Cadres",
+url:"https://www.crefac.com/formations/formations-syndicales/appropriation-imagin-syndicalisation-cadres/",
+principal:"MG",
+secondaire:"DS"
+},
+
+{
+titre:"Imagin’ Syndicalisation Cadres",
+url:"https://www.crefac.com/formations/formations-syndicales/imagincadres-agir-sur-les-stereotypes-pour-la-syndicalisation-des-cadres/",
+principal:"DS",
+secondaire:"MG"
+},
+
+{
+titre:"Être référent cadres",
+url:"https://www.crefac.com/formations/formations-syndicales/etre-referent-cadres/",
+principal:"MG",
+secondaire:"DS"
+},
+
+{
+titre:"Accompagnement Strategie Elections Cadres",
+url:"https://www.crefac.com/formations/formations-syndicales/accompagnement-strategie-elections/",
+principal:"NEG",
+secondaire:"DS"
+},
+
+{
+titre:"Agir pour la transition juste dans mon entreprise, mon administration",
+url:"https://www.crefac.com/formations/formations-professionnelles/agir-pour-la-transition-juste-dans-mon-entreprise/",
+principal:"CT",
+secondaire:"IA"
+},
+
+{
+titre:"Charge de travail, prenez la main",
+url:"https://www.crefac.com/formations/formations-professionnelles/charge-de-travail-prenez-la-main/",
+principal:"CT",
+secondaire:"DP"
+},
+
+{
+titre:"Les entretiens au coeur du management",
+url:"https://www.crefac.com/formations/formations-professionnelles/lentretien-professionnel-enjeux-et-pratiques/",
+principal:"DP",
+secondaire:"MG"
+},
+
+{
+titre:"La résolution des conflits dans un collectif",
+url:"https://www.crefac.com/formations/formations-professionnelles/la-resolution-des-conflits-dans-un-collectif/",
+principal:"DP",
+secondaire:"CT"
+},
+
+{
+titre:"Bonnes pratiques en digital et en télétravail",
+url:"https://www.crefac.com/formations/formations-professionnelles/digital-detox-et-teletravail/",
+principal:"IA",
+secondaire:"CT"
+},
+
+{
+titre:"Manager dans une structure syndicale",
+url:"https://www.crefac.com/formations/formations-syndicales/manager-dans-une-structure-syndicale/",
+principal:"MG",
+secondaire:"DP"
+},
+
+{
+titre:"Accompagnement à la structuration des exécutifs d’organisation et/ou des instances politiques",
+url:"https://www.crefac.com/formations/formation-a-la-demande/accompagnement-a-la-structuration-des-executifs-dorganisation-et-ou-des-instances-politiques/",
+principal:"MG",
+secondaire:"NEG"
+},
+
+{
+titre:"Représentants de proximité",
+url:"https://www.crefac.com/formations/formation-a-la-demande/representants-de-proximite/",
+principal:"NEG",
+secondaire:"DS"
+}
+
+];
+
+const labels = {
+DP:"Dialogue professionnel",
+MG:"Animation collective et management",
+DS:"Développement syndical",
+NEG:"Dialogue social et représentation",
+CT:"Conditions de travail et QVCT",
+IA:"Transformations du travail et numérique"
+};
+
+let currentQuestion = 0;
+
+let scores = {
+DP:0,
+MG:0,
+DS:0,
+NEG:0,
+CT:0,
+IA:0
+};
+
+function startQuiz(){
+
+document.querySelector(".intro").style.display = "none";
+
+renderQuestion();
+
+}
+
+function renderQuestion(){
+
+const app = document.getElementById("app");
+
+if(currentQuestion >= questions.length){
+showResults();
+return;
+}
+
+const q = questions[currentQuestion];
+
+app.innerHTML = `
+
+<div class="card">
+
+<div class="progress">
+<div class="progress-bar"
+style="width:${(currentQuestion/questions.length)*100}%">
+</div>
+</div>
+
+<h2>${q.question}</h2>
+
+${q.options.map((o,index)=>`
+
+<button class="option"
+onclick="selectOption(${index})">
+
+${o.text}
+
+</button>
+
+`).join("")}
+
+</div>
+
+`;
+
+}
+
+function selectOption(index){
+
+const option = questions[currentQuestion].options[index];
+
+for(let key in option.scores){
+scores[key] += option.scores[key];
+}
+
+currentQuestion++;
+
+renderQuestion();
+
+}
+
+function showResults(){
+
+const formationScores = formations.map(f => {
+
+let score = 0;
+
+score += scores[f.principal] * 2;
+score += scores[f.secondaire];
+
+return {
+...f,
+score: score
+};
+
+});
+
+formationScores.sort((a,b)=>b.score-a.score);
+
+const topFormations = formationScores.slice(0,3);
+
+const sortedFamilies = Object.entries(scores)
+.sort((a,b)=>b[1]-a[1]);
+
+const topFamilies = sortedFamilies.slice(0,3).map(f=>f[0]);
+
+const app = document.getElementById("app");
+
+app.innerHTML = `
+
+<div class="card">
+
+<div class="logo-result">
+<img src="logo-crefac.png" alt="Logo CREFAC">
+</div>
+
+<h2>Votre profil dominant</h2>
+
+<p>
+Votre profil met principalement en avant les dimensions suivantes :
+</p>
+
+${topFamilies.map(f=>`
+<span class="result-tag">
+${labels[f]}
+</span>
+`).join("")}
+
+<h2 style="margin-top:40px;">
+Vos formations prioritaires
+</h2>
+
+<p>
+Voici les formations CREFAC les plus adaptées
+à votre profil et à vos besoins actuels.
+</p>
+
+<p style="font-weight:bold;color:#1E3A5F;">
+Cliquez sur une formation pour accéder directement
+à sa présentation complète et aux modalités d’inscription.
+</p>
+
+${topFormations.map(f=>`
+
+<div class="formation">
+
+<a href="${f.url}" target="_blank">
+${f.titre}
+</a>
+
+<p class="small">
+Dominante : ${labels[f.principal]}
+</p>
+
+</div>
+
+`).join("")}
+
+<button onclick="restartQuiz()">
+Recommencer le questionnaire
+</button>
+
+</div>
+
+`;
+
+}
+
+function restartQuiz(){
+
+currentQuestion = 0;
+
+scores = {
+DP:0,
+MG:0,
+DS:0,
+NEG:0,
+CT:0,
+IA:0
+};
+
+document.getElementById("app").innerHTML = "";
+
+document.querySelector(".intro").style.display = "block";
+
+window.scrollTo(0,0);
+
+}
+
+</script>
+
+</body>
+</html>
